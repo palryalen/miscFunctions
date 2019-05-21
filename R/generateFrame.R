@@ -1,6 +1,6 @@
 #' Survival data generator
 #'
-#' @description
+#' @description Generates event history data
 #'
 #' @param n Total number of indiivduals
 #' @param endTime End of follow-up time
@@ -14,7 +14,59 @@
 #'
 #' @examples
 #'
+#' # generating multistate data with 5 states
 #'
+#' n <- 100
+#'
+#'
+#' a12 <- 0.8;a13 <- 0.5;a15 <- 1
+#' a21 <- 1.2;a24 <- 0.7;a25 <- 1.2
+#' a34 <- 0.8;a35 <- 1.4;a43 <- 0.6;a45 <- 1.5
+#'
+#' endTime <- 10
+#'
+#' xx <- seq(0,endTime,length.out = 20)
+#'
+#' transitionMatrix <- vector("list",length = 5)
+#' transitionMatrix[[1]]$smoothspline[[1]] <- list(NULL)
+#' transitionMatrix[[1]]$smoothspline[[2]] <- list(smooth.spline(xx,seq(a12,a12,length.out=length(xx))))
+#' transitionMatrix[[1]]$smoothspline[[3]] <- list(smooth.spline(xx,seq(a13,a13,length.out=length(xx))))
+#' transitionMatrix[[1]]$smoothspline[[4]] <- list(NULL)
+#' transitionMatrix[[1]]$smoothspline[[5]] <- list(smooth.spline(xx,seq(a15,a15,length.out=length(xx))))
+#' transitionMatrix[[1]]$neighbours <- c(2,3,5)
+#' transitionMatrix[[2]]$smoothspline[[1]] <- list(smooth.spline(xx,seq(a21,a21,length.out=length(xx))))
+#' transitionMatrix[[2]]$smoothspline[[2]] <- list(NULL)
+#' transitionMatrix[[2]]$smoothspline[[3]] <- list(NULL)
+#' transitionMatrix[[2]]$smoothspline[[4]] <- list(smooth.spline(xx,seq(a24,a24,length.out=length(xx))))
+#' transitionMatrix[[2]]$smoothspline[[5]] <- list(smooth.spline(xx,seq(a25,a25,length.out=length(xx))))
+#' transitionMatrix[[2]]$neighbours <- c(1,4,5)
+#' transitionMatrix[[3]]$smoothspline[[1]] <- list(NULL)
+#' transitionMatrix[[3]]$smoothspline[[2]] <- list(NULL)
+#' transitionMatrix[[3]]$smoothspline[[3]] <- list(NULL)
+#' transitionMatrix[[3]]$smoothspline[[4]] <- list(smooth.spline(xx,seq(a34,a34,length.out=length(xx))))
+#' transitionMatrix[[3]]$smoothspline[[5]] <- list(smooth.spline(xx,seq(a35,a35,length.out=length(xx))))
+#' transitionMatrix[[3]]$neighbours <- c(4,5)
+#' transitionMatrix[[4]]$smoothspline[[1]] <- list(NULL)
+#' transitionMatrix[[4]]$smoothspline[[2]] <- list(NULL)
+#' transitionMatrix[[4]]$smoothspline[[3]] <- list(smooth.spline(xx,seq(a43,a43,length.out=length(xx))))
+#' transitionMatrix[[4]]$smoothspline[[4]] <- list(NULL)
+#' transitionMatrix[[4]]$smoothspline[[5]] <- list(smooth.spline(xx,seq(a45,a45,length.out=length(xx))))
+#' transitionMatrix[[4]]$neighbours <- c(3,5)
+#' transitionMatrix[[5]]$smoothspline[[1]] <- list(NULL)
+#' transitionMatrix[[5]]$smoothspline[[2]] <- list(NULL)
+#' transitionMatrix[[5]]$smoothspline[[3]] <- list(NULL)
+#' transitionMatrix[[5]]$smoothspline[[4]] <- list(NULL)
+#' transitionMatrix[[5]]$smoothspline[[5]] <- list(NULL)
+#' transitionMatrix[[5]]$neighbours <- NULL
+#'
+#'
+#' # setting starting state 1
+#' dfr <- generateFrame(n,endTime,transitionMatrix,1)
+#'
+#' # 5 is a terminating state
+#' dfr <- dfr[!(dfr$from.state == 5),]
+#'
+#' head(dfr)
 #'
 #' @export
 
